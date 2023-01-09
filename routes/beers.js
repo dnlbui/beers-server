@@ -32,8 +32,9 @@ const beers = {
   ]
 }
 
-router.param('beer', function(req, res, next, id) {
-  req.beer = beers.beers.find(beer => beer.id === parseInt(id));
+router.param('beer', function(req, res, next, beerId) {
+  req.beer = beers.beers.find(beer => beer.id === parseInt(beerId));
+  req.review = parseInt(req.params.review);
   next();
 });
 
@@ -46,7 +47,13 @@ router.get('/:beer', (req, res) => {
 });
 
 router.get('/:beer/reviews', (req, res) => {
-  res.send(`The beer id you requested is: ${req.beer.name}`);
+  
+  res.send(`The review of beer id you requested says it's: ${req.beer.reviews[0].text}`);
 });
+
+router.get('/:beer/reviews/:review', (req, res) => {
+  const review = req.beer.reviews.find(review => req.review === review.id);
+  res.send(`The review of the beer id and the review id you request says it's: ${review.text}`)
+})
 
 module.exports = router;
